@@ -23,14 +23,15 @@ class EssayWindow(QMainWindow, Ui_MainWindow):
         self.essay_id = essay_id
         if self.essay_id:
             self.fill_data()
+        else:
+            self.literature_list.setVisible(False)
+            self.genre_list.setVisible(False)
         set_parameters(self)
 
         self.go_home_btn.clicked.connect(self.go_home)
         self.save_btn.clicked.connect(self.save)
         self.literature_combo_box.addItems(['Реальная жизнь/исторический опыт'] + get_all_literature())
 
-        self.literature_list.setVisible(False)
-        self.genre_list.setVisible(False)
 
         self.genre_list.itemDoubleClicked.connect(self.remove_genre)
         self.literature_list.itemDoubleClicked.connect(self.remove_literature)
@@ -150,5 +151,17 @@ class EssayWindow(QMainWindow, Ui_MainWindow):
         data = all_data(self.essay_id)
         self.title.setText(data['title'])
         self.essay_text.setText(data['text'])
-        self.genre_list.addItems(data['genres'])
-        self.literature_list.addItems(data['literature_list'])
+
+        # Очищаем списки перед добавлением
+        self.genre_list.clear()
+        self.literature_list.clear()
+
+        # Добавляем элементы
+        if data['genres']:  # Проверяем, что список не пустой
+            self.genre_list.addItems(data['genres'])
+
+        if data['literature_list']:  # Проверяем, что список не пустой
+            self.literature_list.addItems(data['literature_list'])
+
+        # Обновляем видимость после добавления элементов
+        self.update_visible()

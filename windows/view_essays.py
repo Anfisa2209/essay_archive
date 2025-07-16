@@ -1,11 +1,9 @@
-import sys
-
+from PyQt6.QtCore import Qt, pyqtSignal, QPropertyAnimation
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout,
-    QScrollArea, QLabel, QFrame, QSizePolicy, QPushButton
+    QMainWindow, QWidget, QVBoxLayout,
+    QScrollArea, QLabel, QFrame, QSizePolicy, QPushButton, QHBoxLayout
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QPropertyAnimation
 
 from tools import set_parameters
 
@@ -43,6 +41,7 @@ class EssayWidget(QFrame):
         # Темы
         topics_text = ", ".join(topics)  # topics - список строк
         topics_label = QLabel(f"<b>Темы:</b> {topics_text}")
+        topics_label.setStyleSheet('font-size:14px;')
 
         # Количество слов
         count_label = QLabel(f"<b>Кол-во слов:</b> {word_count}")
@@ -76,10 +75,40 @@ class MainWindow(QMainWindow):
         super().__init__()
         set_parameters(self)
         self.setGeometry(300, 50, 933, 753)
+        self.setStyleSheet(".QPushButton {\n"
+                           "    width: 100px;\n"
+                           "    height: 100px;\n"
+                           "    background-color:#e6ad85;\n"
+                           "    margin: 10px;\n"
+                           "    border-radius: 5px;\n"
+                           "    font-size:20px;\n"
+                           "    word-wrap: break-word;\n"
+                           "    cursor: Pointing-Hand;   \n"
+                           "}\n"
+                           ".QPushButton:hover {\n"
+                           "    background-color: rgb(201, 152, 117);\n"
+                           "}\n"
+                           ".QWidget {\n"
+                           "background-color: rgb(240, 221, 192);\n"
+                           "\n"
+                           "}")
 
         # Основные виджеты
         main_widget = QWidget()
         main_layout = QVBoxLayout(main_widget)
+
+        # Создаем кнопку "На главную" и добавляем ее в layout
+        self.go_back_btn = QPushButton('На главную')
+        self.go_back_btn.setFixedSize(141, 61)  # Фиксированный размер вместо setGeometry
+        self.go_back_btn.clicked.connect(self.open_home_page)
+
+        # Создаем горизонтальный layout для кнопки (чтобы можно было выровнять слева)
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.go_back_btn)
+        button_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        button_layout.setContentsMargins(20, 20, 0, 20)  # Отступы
+
+        main_layout.addLayout(button_layout)
 
         # Создаем прокручиваемую область
         scroll_area = QScrollArea()
@@ -110,3 +139,8 @@ class MainWindow(QMainWindow):
         self.essay_window.show()
         self.close()
 
+    def open_home_page(self):
+        from windows.main_page import MainWindow
+        self.window = MainWindow()
+        self.window.show()
+        self.close()
