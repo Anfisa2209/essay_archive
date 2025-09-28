@@ -1,4 +1,4 @@
-# pyuic6 -o forms/python_forms/add_essay.py forms/UI_forms/add_essay.ui
+# pyuic6 -o forms/python_forms/main_window.py forms/UI_forms/main_window.ui.ui
 import sys
 
 from PyQt6.QtWidgets import QApplication

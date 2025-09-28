@@ -36,7 +36,7 @@ def count_words(filename):
         filename = essay_path / filename
 
         with open(filename, encoding='utf-8') as f:
-            words = [word for line in f for word in line.strip().split()]
+            words = [word for line in f for word in line.strip().split() if word not in ['-', "––"]]
         return len(words)
     except FileNotFoundError:
         print(f'Файл {filename} не найден')

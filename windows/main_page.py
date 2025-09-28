@@ -22,6 +22,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.view_literature_btn.clicked.connect(self.view_literature)
         self.view_authors_btn.clicked.connect(self.view_authors)
         self.view_essays_btn.clicked.connect(self.view_essays)
+        self.ege_essay_btn.clicked.connect(self.open_ege_essays)
+        self.final_essay_btn.clicked.connect(self.open_final_essays)
         self.buttons = [self.view_literature_btn, self.view_authors_btn, self.view_essays_btn, self.add_essay_btn]
 
         genres = ['Выберете тему'] + get_all_genres()
@@ -40,6 +42,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.genre == 'Выберете тему':
             self.genre = None
 
+    def open_final_essays(self):
+        from windows.view_essays import MainWindow as EssayWindow
+        essay_data = load_essay_data(essay_type='итоговое сочинение')
+
+        self.essay_window = EssayWindow(essay_data)
+        self.essay_window.show()
+        self.close()
+
+    def open_ege_essays(self):
+        from windows.view_essays import MainWindow as EssayWindow
+        essay_data = load_essay_data(essay_type='сочинение егэ')
+
+        self.essay_window = EssayWindow(essay_data)
+        self.essay_window.show()
+        self.close()
+
     def view_literature(self):
         ...
 
@@ -53,8 +71,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.essay_window = EssayWindow(essay_data)
         self.essay_window.show()
         self.close()
-
-
 
     def genre_selected(self):
         # в выпадающем списке выбрали какую-то тему и хотят прочитать по ней сочинения
@@ -74,8 +90,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             btn.adjustSize()
 
 
-if __name__ == "__main__":
+def except_hook(cls, exception, traceback):
+    sys.__excepthook__(cls, exception, traceback)
+
+
+if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
+    form = MainWindow()
+    form.show()
+    sys.excepthook = except_hook
     sys.exit(app.exec())

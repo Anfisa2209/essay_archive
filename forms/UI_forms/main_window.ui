@@ -4,8 +4,8 @@
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
-    <x>500</x>
-    <y>10</y>
+    <x>0</x>
+    <y>0</y>
     <width>933</width>
     <height>753</height>
    </rect>
@@ -33,7 +33,7 @@ background-color: rgb(240, 221, 192);
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -61,6 +61,24 @@ background-color: rgb(240, 221, 192);
         <string/>
        </property>
       </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string>Сочинения ЕГЭ</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="final_essay_btn">
+         <property name="text">
+          <string>Итоговое сочинение</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <spacer name="horizontalSpacer">

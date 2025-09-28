@@ -31,8 +31,9 @@ def get_essay_data_by_id(essay_id):
     try:
         with connect:
             cursor = connect.cursor()
-            request = """SELECT DISTINCT essay_id, title, filename 
+            request = """SELECT DISTINCT essay_id, title, filename, Types.type 
                         FROM Essay_genre JOIN Genres ON genre_id = genres.id JOIN Essays ON essays.id = essay_id
+                        JOIN Types ON Essays.type_id = Types.id
                         WHERE essay_id = ?"""
             cursor.execute(request, (essay_id,))
             essay_data = cursor.fetchall()[0]
@@ -153,11 +154,17 @@ def get_essay_id(filename):
         return essay_id[0] if essay_id else None
 
 
-def get_all_essays():
+def get_all_essays(essay_type_id=None):
     try:
         with connect:
             cursor = connect.cursor()
-            cursor.execute('''SELECT * FROM Essays''')
+            if essay_type_id:
+                cursor.execute("""SELECT Essays.id, title, filename, type FROM Essays 
+                                    JOIN Types ON type_id = Types.id
+                                    WHERE type_id = ?""", (essay_type_id,))
+            else:
+                cursor.execute('''SELECT Essays.id, title, filename, type FROM Essays 
+                                    JOIN Types ON type_id = Types.id''')
             essays = cursor.fetchall()
         return sorted(essays)
     except sqlite3.Error as e:
@@ -171,12 +178,20 @@ def add_essay(title, text, selected_genres, selected_literature, unknown_literat
     try:
         with connect:
             cursor = connect.cursor()
-            file_name = f"essay_{uuid.uuid4().hex}"  # essay_1a2b3c4d5e6f7890
-            file_path = f'./essays/{file_name}.txt'
+            file_name = f"essay_{uuid.uuid4().hex}"
+
+            # Создаем абсолютный путь к папке essays
+            base_dir = Path(__file__).parent.parent  # Поднимаемся на два уровня вверх от bd/sqlite.py
+            essays_dir = base_dir / "essays"
+
+            # Создаем папку если она не существует
+            essays_dir.mkdir(exist_ok=True)
+
+            file_path = essays_dir / f"{file_name}.txt"
 
             try:
                 with open(file_path, 'w', encoding='utf-8') as essay_file:
-                    essay_file.write(text)
+                    essay_file.write(str(text))
             except Exception as e:
                 print(f'Error while saving text: {e}')
                 showMessageBox(text='Ошибка сохранения', info=f"Не удалось сохранить файл: {e}")
@@ -226,18 +241,22 @@ def add_essay(title, text, selected_genres, selected_literature, unknown_literat
         return
 
 
-def load_essay_data(genre=None):
+def load_essay_data(genre=None, essay_type=None):
     essay_data = []
 
     if not genre:  # если не задали какой-то темы
-        data = get_all_essays()
+        if essay_type:  # если является ИС/сочинением ЕГЭ
+            essay_type_id = get_type_id(essay_type)
+            data = get_all_essays(essay_type_id)
+        else:
+            data = get_all_essays()
     else:
         data = get_essays_by_genre(genre)
     for essay in data:
-        essay_id, title, filename = essay
+        essay_id, title, filename, essay_type = essay
         word_count = count_words(filename)
         genre_list = all_genres_on_essay(essay_id)
-        essay_data.append((essay_id, title, genre_list, word_count))
+        essay_data.append((essay_id, title, genre_list, word_count, essay_type))
     return essay_data
 
 
@@ -275,8 +294,8 @@ def add_author(author):
         return None
 
 
-def all_data(essay_id):
-    _, title, filename = get_essay_data_by_id(essay_id)
+def all_essay_data(essay_id):
+    _, title, filename, essay_type = get_essay_data_by_id(essay_id)
     filename += '.txt'
     file_path = current_dir.parent / "essays" / filename
     try:
@@ -284,8 +303,23 @@ def all_data(essay_id):
             text = file.read()
         genres_list = all_genres_on_essay(essay_id)
         literatures_list = all_literature_on_essay(essay_id)
-        result = {'title': title, 'text': text, 'genres': genres_list, 'literature_list': literatures_list}
+        result = {'title': title, 'text': text, 'genres': genres_list, 'literature_list': literatures_list,
+                  'essay_type': essay_type}
         return result
     except FileNotFoundError:
         print(f'Файл {file_path} не найден')
         return
+
+
+def get_type_id(essay_type):
+    if not isinstance(essay_type, str):
+        return None
+    essay_type = essay_type.lower().strip().replace("егэ", "ЕГЭ")
+    with connect:
+        cursor = connect.cursor()
+        type_id = cursor.execute('''SELECT id FROM Types WHERE type = ?''', (essay_type,)).fetchone()
+        return type_id[0] if type_id else None
+
+
+if __name__ == '__main__':
+    print(get_all_essays(2))

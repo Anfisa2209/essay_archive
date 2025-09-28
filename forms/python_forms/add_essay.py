@@ -1,3 +1,4 @@
+# ФАЙЛ НЕ СОВПАДАЕТ С UI-ФАЙЛОМ!
 # Form implementation generated from reading ui file 'forms/UI_forms/add_essay.ui'
 #
 # Created by: PyQt6 UI code generator 6.9.1
@@ -120,6 +121,49 @@ class Ui_MainWindow(object):
         self.literature_list.setFont(font)
         self.gridLayout.addWidget(self.literature_list, 4, 0, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout)
+
+        # Добавленные radiobuttons
+        self.essay_type_layout = QtWidgets.QVBoxLayout()
+        self.essay_type_layout.setObjectName("essay_type_layout")
+
+        self.essay_type_label = QtWidgets.QLabel(parent=self.widget)
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
+        self.essay_type_label.setFont(font)
+        self.essay_type_label.setObjectName("essay_type_label")
+        self.essay_type_layout.addWidget(self.essay_type_label)
+
+        self.radio_button_layout = QtWidgets.QHBoxLayout()
+        self.radio_button_layout.setObjectName("radio_button_layout")
+
+        self.ege_radio = QtWidgets.QRadioButton(parent=self.widget)
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
+        self.ege_radio.setFont(font)
+        self.ege_radio.setObjectName("ege_radio")
+        self.radio_button_layout.addWidget(self.ege_radio)
+
+        self.final_radio = QtWidgets.QRadioButton(parent=self.widget)
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
+        self.final_radio.setFont(font)
+        self.final_radio.setObjectName("final_radio")
+        self.radio_button_layout.addWidget(self.final_radio)
+
+        self.other_radio = QtWidgets.QRadioButton(parent=self.widget)
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
+        self.other_radio.setFont(font)
+        self.other_radio.setObjectName("other_radio")
+        self.radio_button_layout.addWidget(self.other_radio)
+
+        self.essay_type_layout.addLayout(self.radio_button_layout)
+        self.verticalLayout.addLayout(self.essay_type_layout)
+
         self.gridLayout_3 = QtWidgets.QGridLayout()
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.unknown_author_lbl = QtWidgets.QLabel(parent=self.widget)
@@ -168,5 +212,9 @@ class Ui_MainWindow(object):
         self.essay_text.setPlaceholderText(_translate("MainWindow", "Начните писать сочинение..."))
         self.label_2.setText(_translate("MainWindow", "1) На какую тему написано сочинение?"))
         self.label.setText(_translate("MainWindow", "2) Какие произведения вы приводили в качестве примера?"))
+        self.essay_type_label.setText(_translate("MainWindow", "3) Это сочинение..."))
+        self.ege_radio.setText(_translate("MainWindow", "сочинение ЕГЭ"))
+        self.final_radio.setText(_translate("MainWindow", "Итоговое сочинение"))
+        self.other_radio.setText(_translate("MainWindow", "другое"))
         self.unknown_author_lbl.setText(_translate("MainWindow", "Кто написал ?"))
         self.save_btn.setText(_translate("MainWindow", "Сохранить сочинение "))

@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import (
-    QMainWindow, QListWidget, QMessageBox
+    QMainWindow, QListWidget, QMessageBox, QButtonGroup
 )
 
-from bd.sqlite import get_all_genres, add_essay, get_all_literature, literature_exists, all_data
+from bd.sqlite import get_all_genres, add_essay, get_all_literature, literature_exists, all_essay_data
 from forms.python_forms.add_essay import Ui_MainWindow
 from tools import set_parameters, showMessageBox
 
@@ -48,6 +48,11 @@ class EssayWindow(QMainWindow, Ui_MainWindow):
         if genre:
             self.genre_combo_box.setCurrentText(genre)
             self.add_genre_to_list()
+
+        # self.essay_type_btn_group = QButtonGroup(self)
+        # self.essay_type_btn_group.addButton(self.ege_radio)
+        # self.essay_type_btn_group.addButton(self.final_radio)
+        # self.essay_type_btn_group.addButton(self.other_radio)
 
     def add_genre_to_list(self):
         text = self.genre_combo_box.currentText().strip()
@@ -98,10 +103,12 @@ class EssayWindow(QMainWindow, Ui_MainWindow):
             self.unknown_author_edit.setVisible(False)
 
     def save(self):
-        title = self.title.text().strip('?!*"><\/')
+        title = self.title.text()
         text = self.essay_text.toPlainText()
         selected_genres = selected_info(self.genre_list)
         selected_literature = selected_info(self.literature_list)
+        # selected_essay_type = self.essay_type_btn_group.checkedButton()
+        # print(selected_essay_type)
         if not title:
             showMessageBox(text='Незаполненное поле!', info='Введите название сочинения')
             self.title.setStyleSheet('border: rgb(255, 0, 0);')
@@ -148,7 +155,7 @@ class EssayWindow(QMainWindow, Ui_MainWindow):
         #     event.accept()
 
     def fill_data(self):
-        data = all_data(self.essay_id)
+        data = all_essay_data(self.essay_id)
         self.title.setText(data['title'])
         self.essay_text.setText(data['text'])
 
